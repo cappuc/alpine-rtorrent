@@ -1,0 +1,29 @@
+FROM arm32v7/debian
+
+ENV UGID 666
+
+RUN addgroup --gid $UGID rtorrent && \
+    adduser --uid $UGID --ingroup rtorrent rtorrent && \
+    apt-get update && apt-get install -y rtorrent && \
+    mkdir -p /home/rtorrent/rtorrent/config.d && \
+    mkdir /home/rtorrent/rtorrent/.session && \
+    mkdir /home/rtorrent/rtorrent/download && \
+    mkdir /home/rtorrent/rtorrent/watch && \
+    chown -R rtorrent:rtorrent /home/rtorrent/rtorrent
+
+COPY --chown=rtorrent:rtorrent config.d/ /home/rtorrent/rtorrent/config.d/
+COPY --chown=rtorrent:rtorrent .rtorrent.rc /home/rtorrent/
+
+# debian image contains rtorrent 0.9.6 and the setting `system.daemon.set` is not supported
+RUN sed -i '/system.daemon.set/d' /home/rtorrent/rtorrent/config.d/05-xmlrpc.rc
+
+#This volume make it easier to delete rtorrent lock files after a bad shutdown.
+VOLUME /home/rtorrent/rtorrent/.session
+
+EXPOSE 16891
+EXPOSE 6881
+EXPOSE 50000
+
+USER rtorrent
+
+CMD ["rtorrent"]
