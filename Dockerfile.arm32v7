@@ -1,20 +1,27 @@
 FROM arm32v7/debian:buster-slim
 
-RUN apt-get -y update && apt-get -y install rtorrent && \
-    mkdir -p /rtorrent/config.d && \
-    mkdir /rtorrent/.session && \
-    mkdir /rtorrent/temp && \
-    mkdir /rtorrent/download && \
-    mkdir /rtorrent/watch
+ENV UGID 1000
 
-COPY config.d/ /rtorrent/config.d/
-COPY .rtorrent.rc /root/
+RUN addgroup --gid $UGID rtorrent && \
+    adduser --uid $UGID --ingroup rtorrent rtorrent && \
+    apt-get -y update && apt-get -y install rtorrent && \
+    mkdir -p /home/rtorrent/rtorrent/config.d && \
+    mkdir /home/rtorrent/rtorrent/.session && \
+    mkdir /home/rtorrent/rtorrent/temp && \
+    mkdir /home/rtorrent/rtorrent/download && \
+    mkdir /home/rtorrent/rtorrent/watch && \
+    chown -R rtorrent:rtorrent /home/rtorrent/rtorrent
+
+COPY --chown=rtorrent:rtorrent config.d/ /home/rtorrent/rtorrent/config.d/
+COPY --chown=rtorrent:rtorrent .rtorrent.rc /home/rtorrent/
 
 # This volume make it easier to delete rtorrent lock files after a bad shutdown.
-VOLUME /rtorrent/.session
+VOLUME /home/rtorrent/rtorrent/.session
 
 EXPOSE 16891
 EXPOSE 6881
 EXPOSE 50000
+
+USER rtorrent
 
 CMD ["rtorrent"]

@@ -11,7 +11,7 @@
 method.insert = cfg.download, private|const|string, (cat,(cfg.basedir),"temp/")
 method.insert = cfg.session,  private|const|string, (cat,(cfg.basedir),".session/")
 method.insert = cfg.watch,    private|const|string, (cat,(cfg.basedir),"watch/")
-method.insert = d.get_finished_dir, simple, "(cat,(cfg.basedir),"download/",$d.custom1="
+method.insert = d.get_finished_dir, simple, "cat=$cfg.basedir/download/$d.custom1="
 
 execute.throw = sh, -c, (cat,\
     "mkdir -p \"",(cfg.watch),"/load\" ",\
