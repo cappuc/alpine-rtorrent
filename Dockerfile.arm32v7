@@ -8,7 +8,7 @@ RUN apt-get -y update && apt-get -y install rtorrent && \
     mkdir /rtorrent/watch
 
 COPY config.d/ /rtorrent/config.d/
-COPY .rtorrent.rc /
+COPY .rtorrent.rc /root/
 
 # This volume make it easier to delete rtorrent lock files after a bad shutdown.
 VOLUME /rtorrent/.session
@@ -16,7 +16,5 @@ VOLUME /rtorrent/.session
 EXPOSE 16891
 EXPOSE 6881
 EXPOSE 50000
-
-USER rtorrent
 
 CMD ["rtorrent"]
