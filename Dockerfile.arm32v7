@@ -1,17 +1,17 @@
-FROM arm32v7/debian-buster-slim
+FROM arm32v7/debian:buster-slim
 
-RUN apt-get update && apt-get install -y rtorrent && \
-    mkdir -p /home/rtorrent/rtorrent/config.d && \
-    mkdir /home/rtorrent/rtorrent/.session && \
-    mkdir /home/rtorrent/rtorrent/temp && \
-    mkdir /home/rtorrent/rtorrent/download && \
-    mkdir /home/rtorrent/rtorrent/watch
+RUN apt-get -y update && apt-get -y install rtorrent && \
+    mkdir -p /rtorrent/config.d && \
+    mkdir /rtorrent/.session && \
+    mkdir /rtorrent/temp && \
+    mkdir /rtorrent/download && \
+    mkdir /rtorrent/watch
 
-COPY config.d/ /home/rtorrent/rtorrent/config.d/
-COPY .rtorrent.rc /home/rtorrent/
+COPY config.d/ /rtorrent/config.d/
+COPY .rtorrent.rc /
 
-#This volume make it easier to delete rtorrent lock files after a bad shutdown.
-VOLUME /home/rtorrent/rtorrent/.session
+# This volume make it easier to delete rtorrent lock files after a bad shutdown.
+VOLUME /rtorrent/.session
 
 EXPOSE 16891
 EXPOSE 6881
